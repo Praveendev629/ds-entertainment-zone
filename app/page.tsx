@@ -33,7 +33,7 @@ const TypewriterText = ({ text, className = "" }: { text: string; className?: st
 };
 
 // ── Types ──────────────────────────────────────────────────────────────────
-interface Category { name: string; url: string }
+interface Category { name: string; url: string; site?: string; genre?: string; year?: string; rating?: string }
 interface Movie { title: string; url: string }
 interface LinkItem { name: string; url: string }
 interface MovieDetails {
@@ -418,6 +418,58 @@ export default function HomePage() {
     finally { setLoading(false); }
   };
 
+  const loadAllContent = async () => {
+    setLoading(true);
+    try {
+      // Load content from all sites
+      const [moviesdaRes, isaidubRes, animesaltRes] = await Promise.all([
+        fetch(`/api/home?site=moviesda`),
+        fetch(`/api/home?site=isaidub`),
+        fetch(`/api/home?site=animesalt`)
+      ]);
+      
+      const [moviesdaData, isaidubData, animesaltData] = await Promise.all([
+        moviesdaRes.json(),
+        isaidubRes.json(),
+        animesaltRes.json()
+      ]);
+      
+      // Combine all categories with site labels
+      const allCategories = [
+        ...(moviesdaData.categories || []).map((cat: Category) => ({ ...cat, site: 'moviesda' })),
+        ...(isaidubData.categories || []).map((cat: Category) => ({ ...cat, site: 'isaidub' })),
+        ...(animesaltData.categories || []).map((cat: Category) => ({ ...cat, site: 'animesalt' }))
+      ];
+      
+      setCategories(allCategories);
+    } catch { setCategories([]); }
+    finally { setLoading(false); }
+  };
+
+  const loadAnimeContent = async () => {
+    setLoading(true);
+    try {
+      // Load anime content with enhanced features
+      const res = await fetch(`/api/home?site=animesalt`);
+      const data = await res.json();
+      
+      // Add enhanced categories for anime
+      const enhancedCategories = (data.categories || []).map((cat: Category) => ({
+        ...cat,
+        site: 'animesalt',
+        // Add anime-specific metadata
+        genre: cat.name.includes('Action') ? 'action' : 
+               cat.name.includes('Romance') ? 'romance' : 
+               cat.name.includes('Comedy') ? 'comedy' : 'general',
+        year: cat.name.match(/\d{4}/) ? cat.name.match(/\d{4}/)?.[0] : undefined,
+        rating: cat.name.includes('HD') ? 'hd' : cat.name.includes('4K') ? '4k' : 'standard'
+      }));
+      
+      setCategories(enhancedCategories);
+    } catch { setCategories([]); }
+    finally { setLoading(false); }
+  };
+
   const switchSite = (s: "moviesda" | "isaidub" | "animesalt") => {
     setSite(s); setSelectedCategory(null); setSearch(""); loadCategories(s);
   };
@@ -685,31 +737,237 @@ export default function HomePage() {
         ) : (
           /* ── Home / categories ── */
           <div className="space-y-12">
-            <section>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <span className="w-2 h-8 bg-pink-600 rounded-full" />
-                  {site === "moviesda" ? "Tamil Movies" : site === "isaidub" ? "Tamil Dubbed Movies" : "Animes Collection"}
-                </h2>
+            {activeNav === "everything" ? (
+              /* ── Everything Tab - Comprehensive View ── */
+              <div className="space-y-8">
+                <section className="mb-8">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <h2 className="text-3xl font-bold flex items-center gap-3">
+                      <motion.span 
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                        className="w-3 h-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full"
+                      />
+                      Everything Collection
+                    </h2>
+                    <div className="flex gap-2">
+                      <span className="px-3 py-1 bg-pink-600/20 text-pink-400 rounded-full text-xs font-medium">
+                        All Sites
+                      </span>
+                      <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-xs font-medium">
+                        {categories.length} Categories
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Filter and Search */}
+                  <div className="flex flex-col sm:flex-row gap-4 mb-6">
+                    <div className="relative group flex-1">
+                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-pink-600 transition-colors" />
+                      <input type="text"
+                        placeholder="Search across all content..."
+                        value={search} onChange={(e) => setSearch(e.target.value)}
+                        className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-600/30 focus:border-pink-600/30 transition-all placeholder:text-zinc-600 text-sm" />
+                    </div>
+                    
+                    {/* Site Filters */}
+                    <div className="flex gap-2">
+                      {["moviesda", "isaidub", "animesalt"].map((siteName) => (
+                        <button
+                          key={siteName}
+                          onClick={() => {
+                            setSite(siteName as "moviesda" | "isaidub" | "animesalt");
+                            setSearch("");
+                          }}
+                          className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            site === siteName
+                              ? "bg-pink-600 text-white"
+                              : "bg-white/10 text-zinc-400 hover:bg-white/20 hover:text-pink-400"
+                          }`}
+                        >
+                          {siteName === "moviesda" ? "Movies" : siteName === "isaidub" ? "Dubbed" : "Anime"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* Categories Grid */}
+                <section>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {loading
+                      ? Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)
+                      : filteredCategories.filter(cat => !["Latest Movies Updates", "Download Now"].includes(cat.name)).map((cat, i) => (
+                          <motion.div key={cat.url} layout
+                            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.01 * i }}
+                            className="group relative"
+                          >
+                            <motion.button
+                              onClick={() => openCategory(cat)}
+                              className="w-full p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 hover:border-pink-600/50 transition-all text-left group relative overflow-hidden"
+                              whileHover={{ scale: 1.02, y: -2 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              {/* Site Badge */}
+                              {cat.site && (
+                                <div className="absolute top-2 right-2">
+                                  <span className={`px-2 py-1 rounded-full text-[8px] font-bold ${
+                                    cat.site === 'moviesda' ? 'bg-red-600 text-white' :
+                                    cat.site === 'isaidub' ? 'bg-blue-600 text-white' :
+                                    'bg-green-600 text-white'
+                                  }`}>
+                                    {cat.site === 'moviesda' ? 'TM' : cat.site === 'isaidub' ? 'TD' : 'AN'}
+                                  </span>
+                                </div>
+                              )}
+                              
+                              <div className="relative z-10">
+                                <span className="text-sm font-semibold text-zinc-400 group-hover:text-white transition-colors line-clamp-2">{cat.name}</span>
+                                <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-pink-600 mt-2 transition-all group-hover:translate-x-1" />
+                              </div>
+                              <div className="absolute top-0 right-0 w-16 h-16 bg-pink-600/5 blur-2xl rounded-full translate-x-8 -translate-y-8" />
+                            </motion.button>
+                          </motion.div>
+                        ))}
+                  </div>
+                </section>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {loading
-                  ? Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)
-                  : filteredCategories.filter(cat => !["Latest Movies Updates", "Download Now"].includes(cat.name)).map((cat, i) => (
-                      <motion.button key={cat.url}
-                        initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-                        transition={{ delay: 0.01 * i }}
-                        onClick={() => openCategory(cat)}
-                        className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 hover:border-pink-600/50 transition-all text-left group relative overflow-hidden">
-                        <div className="relative z-10">
-                          <span className="text-sm font-semibold text-zinc-400 group-hover:text-white transition-colors line-clamp-2">{cat.name}</span>
-                          <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-pink-600 mt-2 transition-all group-hover:translate-x-1" />
-                        </div>
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-pink-600/5 blur-2xl rounded-full translate-x-8 -translate-y-8" />
-                      </motion.button>
+            ) : activeNav === "anime-collection" ? (
+              /* ── Anime Collection - Enhanced View ── */
+              <div className="space-y-8">
+                <section className="mb-8">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                    <h2 className="text-3xl font-bold flex items-center gap-3">
+                      <motion.div 
+                        animate={{ rotate: 360, scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-4 h-4 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center"
+                      >
+                        <Tv className="w-2 h-2 text-white" />
+                      </motion.div>
+                      Anime Collection
+                    </h2>
+                    <div className="flex gap-2">
+                      <span className="px-3 py-1 bg-purple-600/20 text-purple-400 rounded-full text-xs font-medium">
+                        Enhanced
+                      </span>
+                      <span className="px-3 py-1 bg-pink-600/20 text-pink-400 rounded-full text-xs font-medium">
+                        {categories.filter(cat => cat.site === 'animesalt').length} Categories
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {/* Anime Filters */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {["Action", "Romance", "Comedy", "Drama", "Horror", "Sci-Fi"].map((genre) => (
+                      <button
+                        key={genre}
+                        onClick={() => {
+                          setSearch(genre);
+                        }}
+                        className={`px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                          search === genre
+                            ? "bg-purple-600 text-white"
+                            : "bg-white/10 text-zinc-400 hover:bg-purple-600/20 hover:text-purple-400"
+                        }`}
+                      >
+                        {genre}
+                      </button>
                     ))}
+                  </div>
+                  
+                  {/* Search */}
+                  <div className="relative group flex-1 mb-6">
+                    <Tv className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-purple-600 transition-colors" />
+                    <input type="text"
+                      placeholder="Search anime by title, genre, or year..."
+                      value={search} onChange={(e) => setSearch(e.target.value)}
+                      className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-600/30 focus:border-purple-600/30 transition-all placeholder:text-zinc-600 text-sm" />
+                  </div>
+                </section>
+
+                {/* Anime Categories Grid */}
+                <section>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {loading
+                      ? Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)
+                      : filteredCategories.filter(cat => !["Latest Movies Updates", "Download Now"].includes(cat.name)).map((cat, i) => (
+                          <motion.div key={cat.url} layout
+                            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.01 * i }}
+                            className="group relative"
+                          >
+                            <motion.button
+                              onClick={() => openCategory(cat)}
+                              className="w-full p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 hover:border-purple-600/50 transition-all text-left group relative overflow-hidden"
+                              whileHover={{ scale: 1.02, y: -2 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              {/* Anime Badge */}
+                              <div className="absolute top-2 right-2">
+                                <span className="px-2 py-1 rounded-full text-[8px] font-bold bg-green-600 text-white">
+                                  AN
+                                </span>
+                              </div>
+                              
+                              {/* Enhanced Category Info */}
+                              <div className="relative z-10">
+                                <span className="text-sm font-semibold text-zinc-400 group-hover:text-white transition-colors line-clamp-2">{cat.name}</span>
+                                <div className="flex items-center gap-2 mt-1">
+                                  {cat.genre && (
+                                    <span className="px-2 py-1 bg-purple-600/20 text-purple-400 rounded text-[10px] font-medium">
+                                      {cat.genre}
+                                    </span>
+                                  )}
+                                  {cat.year && (
+                                    <span className="px-2 py-1 bg-blue-600/20 text-blue-400 rounded text-[10px] font-medium">
+                                      {cat.year}
+                                    </span>
+                                  )}
+                                  {cat.rating && (
+                                    <span className="px-2 py-1 bg-yellow-600/20 text-yellow-400 rounded text-[10px] font-medium">
+                                      {cat.rating}
+                                    </span>
+                                  )}
+                                </div>
+                                <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-purple-600 transition-all group-hover:translate-x-1" />
+                              </div>
+                              <div className="absolute top-0 right-0 w-16 h-16 bg-purple-600/5 blur-2xl rounded-full translate-x-8 -translate-y-8" />
+                            </motion.button>
+                          </motion.div>
+                        ))}
+                  </div>
+                </section>
               </div>
-            </section>
+            ) : (
+              /* ── Regular Site View ── */
+              <section>
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                  <h2 className="text-2xl font-bold flex items-center gap-2">
+                    <span className="w-2 h-8 bg-pink-600 rounded-full" />
+                    {site === "moviesda" ? "Tamil Movies" : site === "isaidub" ? "Tamil Dubbed Movies" : "Animes Collection"}
+                  </h2>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                  {loading
+                    ? Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)
+                    : filteredCategories.filter(cat => !["Latest Movies Updates", "Download Now"].includes(cat.name)).map((cat, i) => (
+                        <motion.button key={cat.url}
+                          initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.01 * i }}
+                          onClick={() => openCategory(cat)}
+                          className="p-4 bg-white/5 rounded-2xl border border-white/5 hover:bg-white/10 hover:border-pink-600/50 transition-all text-left group relative overflow-hidden">
+                          <div className="relative z-10">
+                            <span className="text-sm font-semibold text-zinc-400 group-hover:text-white transition-colors line-clamp-2">{cat.name}</span>
+                            <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-pink-600 mt-2 transition-all group-hover:translate-x-1" />
+                          </div>
+                            <div className="absolute top-0 right-0 w-16 h-16 bg-pink-600/5 blur-2xl rounded-full translate-x-8 -translate-y-8" />
+                          </motion.button>
+                      ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>
@@ -932,8 +1190,21 @@ export default function HomePage() {
             {[
               { id: "tamil-movies", icon: Film, label: "Tamil Movies", action: () => { switchSite("moviesda"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-movies"); } },
               { id: "tamil-dubbed", icon: Mic, label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
-              { id: "anime-collection", icon: Tv, label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
-              { id: "everything", icon: Globe, label: "Everything", action: () => { router.push("/everything"); setActiveNav("everything"); } },
+              { id: "anime-collection", icon: Tv, label: "Anime Collection", action: () => { 
+  setActiveNav("anime-collection"); 
+  setSelectedCategory(null); 
+  setSearch(""); 
+  // Load anime content with all features
+  loadAnimeContent();
+} },
+              { id: "everything", icon: Globe, label: "Everything", action: () => { 
+  setActiveNav("everything"); 
+  setSelectedCategory(null); 
+  setSearch(""); 
+  setSite("moviesda");
+  // Load all categories from all sites
+  loadAllContent();
+} },
             ].map((item) => (
               <motion.div key={item.id} className="relative">
                 <motion.button
