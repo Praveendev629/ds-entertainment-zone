@@ -44,9 +44,6 @@ export default function AnimePage() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-pink-500">
-              Anime Collection
-            </span>
           </div>
         </div>
       </header>

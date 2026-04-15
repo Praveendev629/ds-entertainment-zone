@@ -686,12 +686,6 @@ export default function HomePage() {
           /* ── Home / categories ── */
           <div className="space-y-12">
             <section>
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
-                <h2 className="text-2xl font-bold flex items-center gap-2">
-                  <span className="w-2 h-8 bg-pink-600 rounded-full" />
-                  {site === "moviesda" ? "Tamil Movies" : site === "isaidub" ? "Tamil Dubbed Movies" : "Animes Collection"}
-                </h2>
-              </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {loading
                   ? Array.from({ length: 12 }).map((_, i) => <div key={i} className="h-24 bg-white/5 rounded-2xl animate-pulse" />)

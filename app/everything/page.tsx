@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Toaster, toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,7 @@ import {
   Search, X, ChevronRight, ChevronDown, Loader2, Film, Globe,
   Download, Play, Pause, Volume2, VolumeX, Maximize2, Minimize2,
   Tv, Book, BookOpen, Trophy, Gamepad2, Smartphone, ExternalLink,
-  Users, Star, TrendingUp, Clock, Heart, Share2, Filter
+  Users, Star, TrendingUp, Clock, Heart, Share2, Filter, Mic
 } from "lucide-react";
 
 // Types for external links
@@ -30,6 +30,12 @@ interface Section {
     name: string;
     links: ExternalLink[];
   }[];
+}
+
+interface Tab {
+  id: string;
+  name: string;
+  links: ExternalLink[];
 }
 
 // External links data
@@ -499,9 +505,12 @@ const sectionsData: Section[] = [
 
 export default function EverythingPage() {
   const router = useRouter();
-  const [activeSection, setActiveSection] = useState<string>("anime");
-  const [activeTab, setActiveTab] = useState<{ [key: string]: string }>({ anime: "streaming" });
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [activeSection, setActiveSection] = useState("anime");
+  const [filteredLinks, setFilteredLinks] = useState<ExternalLink[]>([]);
+  const [activeNav, setActiveNav] = useState("everything");
+  const [showBubble, setShowBubble] = useState<string | null>(null);
 
   // Initialize first tab for all sections on mount
   useEffect(() => {
@@ -511,50 +520,43 @@ export default function EverythingPage() {
         initialTabs[section.id] = section.tabs[0].id;
       }
     });
-    setActiveTab(initialTabs);
+    setActiveNav(initialTabs);
   }, []);
 
-  const currentSection = sectionsData.find(s => s.id === activeSection);
-  const currentTab = currentSection?.tabs.find(t => t.id === activeTab[activeSection]);
+  const currentSection = sectionsData.find((s: Section) => s.id === activeSection);
+  const currentTab = currentSection?.tabs.find((t: Tab) => t.id === activeNav[activeSection]);
 
-  const filteredLinks = currentTab?.links.filter(link =>
-    link.name.toLowerCase().includes(search.toLowerCase()) ||
-    link.description?.toLowerCase().includes(search.toLowerCase()) ||
-    link.category?.toLowerCase().includes(search.toLowerCase())
-  ) || [];
+  // Filter links based on search
+  const filteredLinks = useMemo(() => {
+    return currentTab?.links || [];
+  }, [currentTab]);
 
   const handleLinkClick = (url: string) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
-  const handleTabChange = (sectionId: string, tabId: string) => {
-    setActiveTab(prev => ({ ...prev, [sectionId]: tabId }));
+  const handleTabChange = (section: Section, tabId: string) => {
+    setActiveNav((prev: string) => {
+      const newActive = { ...prev };
+      newActive[section.id] = tabId;
+      return newActive;
+    });
   };
 
   const handleSectionChange = (sectionId: string) => {
-    if (activeSection !== sectionId) {
+    const section = sectionsData.find((s: Section) => s.id === sectionId);
+    if (section) {
       setActiveSection(sectionId);
-      
-      // Auto-select the first tab for the new section
-      const newSection = sectionsData.find(s => s.id === sectionId);
-      if (newSection && newSection.tabs.length > 0) {
-        const firstTabId = newSection.tabs[0].id;
-        setActiveTab(prev => ({ ...prev, [sectionId]: firstTabId }));
+      const firstTab = section.tabs[0]?.id;
+      if (firstTab) {
+        setActiveNav((prev: { [key: string]: string }) => ({ ...prev, [sectionId]: firstTab }));
       }
-      
-      // Show instruction to scroll down
-      setTimeout(() => {
-        toast.success('Scroll down to see more!', {
-          duration: 3000,
-          position: 'top-center',
-          icon: <ChevronDown className="w-5 h-5 animate-bounce" />,
-        });
-      }, 100);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-pink-500/30">
+      {/* ... */}
       <Toaster position="top-right" toastOptions={{ style: { background: "#111", color: "#fff", border: "1px solid rgba(236,72,153,0.2)" } }} />
 
       {/* Header */}
@@ -567,17 +569,7 @@ export default function EverythingPage() {
               DS <span className="text-pink-600">Entertainment Zone</span>
             </span>
           </div>
-          <div className="relative group flex-1 max-w-xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-pink-600 transition-colors" />
-            <input
-              type="text"
-              placeholder="Search in Everything Collection..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-600/30 focus:border-pink-600/30 transition-all placeholder:text-zinc-600 text-sm"
-            />
-          </div>
-        </div>
+                  </div>
       </header>
 
       {/* Site switcher */}
@@ -746,6 +738,81 @@ export default function EverythingPage() {
           </motion.div>
         )}
       </main>
+
+      {/* Bottom Navigation */}
+      <motion.nav 
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-pink-600/30 shadow-2xl"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex justify-around items-center">
+            {[
+              { id: "tamil-movies", icon: Film, label: "Tamil Movies", action: () => { router.push("/?site=moviesda"); setActiveNav("tamil-movies"); } },
+              { id: "tamil-dubbed", icon: Mic, label: "Tamil Dubbed", action: () => { router.push("/?site=isaidub"); setActiveNav("tamil-dubbed"); } },
+              { id: "anime-collection", icon: Tv, label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
+              { id: "everything", icon: Globe, label: "Everything", action: () => { setActiveNav("everything"); } },
+            ].map((item) => (
+              <motion.div key={item.id} className="relative">
+                <motion.button
+                  whileHover={{ 
+                    scale: 1.15, 
+                    y: -5,
+                    transition: { type: "spring", stiffness: 400, damping: 10 }
+                  }}
+                  whileTap={{ 
+                    scale: 0.9,
+                    transition: { type: "spring", stiffness: 600, damping: 15 }
+                  }}
+                  onClick={() => {
+                    item.action();
+                    setShowBubble(item.label);
+                    setTimeout(() => setShowBubble(null), 2000);
+                  }}
+                  className={`p-4 rounded-2xl transition-all duration-300 relative backdrop-blur-sm ${
+                    activeNav === item.id 
+                      ? "bg-gradient-to-br from-pink-500 to-pink-700 text-white shadow-2xl shadow-pink-500/50 border border-pink-400/50" 
+                      : "bg-white/10 text-zinc-300 hover:bg-white/20 hover:text-pink-400 border border-white/10 hover:border-pink-500/30"
+                  }`}
+                >
+                  <motion.div
+                    animate={{ 
+                      rotate: activeNav === item.id ? 360 : 0,
+                      transition: { duration: 0.6, ease: "easeInOut" }
+                    }}
+                  >
+                    <item.icon className="w-6 h-6" />
+                  </motion.div>
+                </motion.button>
+                
+                {/* Bubble Tooltip */}
+                <AnimatePresence>
+                  {showBubble === item.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 15, scale: 0.5 }}
+                      animate={{ opacity: 1, y: -50, scale: 1 }}
+                      exit={{ opacity: 0, y: 15, scale: 0.5 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                      className="absolute left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-2xl backdrop-blur-md"
+                      style={{ top: "-60px" }}
+                    >
+                      {item.label}
+                      <motion.div 
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-pink-600 rotate-45 transform translate-y-1/2"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          transition: { duration: 0.5, repeat: Infinity, repeatDelay: 1 }
+                        }}
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.nav>
     </div>
   );
 }
