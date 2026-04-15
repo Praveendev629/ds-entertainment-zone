@@ -28,7 +28,6 @@ const TypewriterText = ({ text, className = "" }: { text: string; className?: st
   return (
     <span className={`${className} font-serif italic`} style={{ fontFamily: 'cursive' }}>
       {displayText}
-      <span className="animate-pulse">|</span>
     </span>
   );
 };
@@ -345,7 +344,7 @@ export default function HomePage() {
   const [watching, setWatching] = useState<WatchState | null>(null);
   
   // Bottom navigation state
-  const [activeNav, setActiveNav] = useState("tamil-movies");
+  const [activeNav, setActiveNav] = useState("home");
   const [showBubble, setShowBubble] = useState<string | null>(null);
 
   useEffect(() => {
@@ -502,15 +501,22 @@ export default function HomePage() {
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
         <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }} className="text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="relative">
+            {/* Logo background effect */}
+            <div className="absolute inset-0 w-64 h-64 mx-auto rounded-full bg-pink-600/20 blur-3xl scale-150"></div>
             <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain" />
+              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" />
           </motion.div>
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
             <TypewriterText 
               text="dharshan srileka" 
               className="text-3xl font-bold text-pink-400" 
             />
+          </motion.div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
+            <p className="text-sm text-pink-600 font-medium uppercase tracking-wider mt-4">
+              DS - Entertainment Zone
+            </p>
           </motion.div>
         </motion.div>
       </div>
@@ -533,12 +539,19 @@ export default function HomePage() {
               DS <span className="text-pink-600">Entertainment Zone</span>
             </span>
           </div>
-          <div className="relative group flex-1 max-w-xl">
+          {/* Desktop search */}
+          <div className="relative group flex-1 max-w-xl hidden sm:block">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-pink-600 transition-colors" />
             <input type="text"
               placeholder={selectedCategory ? `Search in ${selectedCategory.name}...` : "Search categories or movies..."}
               value={search} onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-11 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-600/30 focus:border-pink-600/30 transition-all placeholder:text-zinc-600 text-sm" />
+          </div>
+          {/* Mobile DS - Entertainment Zone text */}
+          <div className="sm:hidden flex-1 text-center">
+            <p className="text-pink-600 font-bold uppercase tracking-wider text-sm">
+              DS - Entertainment Zone
+            </p>
           </div>
         </div>
       </header>
@@ -886,10 +899,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-2">
           <div className="flex justify-around items-center">
             {[
-              { id: "tamil-movies", label: "Tamil Movies", action: () => { switchSite("moviesda"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-movies"); } },
-              { id: "tamil-dubbed", label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
-              { id: "anime-collection", label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
-              { id: "everything", label: "Everything", action: () => { router.push("/everything"); setActiveNav("everything"); } },
+              { id: "tamil-movies", icon: Film, label: "Tamil Movies", action: () => { switchSite("moviesda"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-movies"); } },
+              { id: "tamil-dubbed", icon: Globe, label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
+              { id: "anime-collection", icon: Tv, label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
+              { id: "everything", icon: Globe, label: "Everything", action: () => { router.push("/everything"); setActiveNav("everything"); } },
             ].map((item) => (
               <div key={item.id} className="relative">
                 <button
@@ -898,13 +911,13 @@ export default function HomePage() {
                     setShowBubble(item.label);
                     setTimeout(() => setShowBubble(null), 2000);
                   }}
-                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 relative ${
+                  className={`p-3 rounded-xl transition-all duration-200 relative ${
                     activeNav === item.id 
                       ? "bg-pink-600 text-white shadow-lg shadow-pink-600/30" 
                       : "text-zinc-400 hover:text-pink-400 hover:bg-white/5"
                   }`}
                 >
-                  {item.label}
+                  <item.icon className="w-6 h-6" />
                 </button>
                 
                 {/* Bubble Tooltip */}
