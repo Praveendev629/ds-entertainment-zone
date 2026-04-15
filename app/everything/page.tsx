@@ -554,27 +554,27 @@ export default function EverythingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-red-500/30">
-      <Toaster position="top-right" toastOptions={{ style: { background: "#111", color: "#fff", border: "1px solid rgba(220,38,38,0.2)" } }} />
+    <div className="min-h-screen bg-[#050505] text-white selection:bg-pink-500/30">
+      <Toaster position="top-right" toastOptions={{ style: { background: "#111", color: "#fff", border: "1px solid rgba(236,72,153,0.2)" } }} />
 
       {/* Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-black/50 border-b border-red-600/10">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-black/50 border-b border-pink-600/10">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div onClick={() => router.push("/")} className="flex items-center gap-2 cursor-pointer shrink-0">
-            <img src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/edc22665-6f69-41bf-966e-691d920b92da/WhatsApp_Image_2026-01-27_at_10.41.17_PM-removebg-preview-1769562285410.png?width=8000&height=8000&resize=contain"
-              alt="Logo" className="w-10 h-10 object-contain" />
+            <img src="/ds-logo.png"
+              alt="DS Entertainment Zone Logo" className="w-10 h-10 object-contain" />
             <span className="text-xl font-bold tracking-tight hidden sm:inline">
-              p.s <span className="text-red-600">movizs</span>
+              DS <span className="text-pink-600">Entertainment Zone</span>
             </span>
           </div>
           <div className="relative group flex-1 max-w-xl">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-red-600 transition-colors" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 group-focus-within:text-pink-600 transition-colors" />
             <input
               type="text"
               placeholder="Search in Everything Collection..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-11 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-600/30 focus:border-red-600/30 transition-all placeholder:text-zinc-600 text-sm"
+              className="w-full pl-11 pr-4 py-2 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-pink-600/30 focus:border-pink-600/30 transition-all placeholder:text-zinc-600 text-sm"
             />
           </div>
         </div>
@@ -648,7 +648,7 @@ export default function EverythingPage() {
                 onClick={() => handleSectionChange(section.id)}
                 className={`p-4 rounded-2xl border transition-all group ${
                   activeSection === section.id
-                    ? "bg-red-600/20 border-red-600/50 text-red-500"
+                    ? "bg-pink-600/20 border-pink-600/50 text-pink-500"
                     : "bg-white/5 border-white/10 text-zinc-500 hover:text-white hover:bg-white/10"
                 }`}
               >
@@ -671,8 +671,8 @@ export default function EverythingPage() {
             {/* Section Header */}
             <div className="text-center">
               <div className="flex items-center justify-center gap-3 mb-4">
-                <currentSection.icon className="w-8 h-8 text-red-500" />
-                <h2 className="text-2xl font-bold">{currentSection.name}</h2>
+                <currentSection.icon className="w-8 h-8 text-pink-500" />
+                <h2 className="text-2xl font-bold text-pink-600">{currentSection.name}</h2>
               </div>
               <p className="text-zinc-400">{currentSection.description}</p>
             </div>
@@ -706,27 +706,27 @@ export default function EverythingPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ duration: 0.2, delay: index * 0.05 }}
                     onClick={() => handleLinkClick(link.url)}
-                    className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-red-600/50 transition-all cursor-pointer group"
+                    className="p-6 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 hover:border-pink-600/50 transition-all cursor-pointer group"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
-                        <h3 className="text-lg font-bold text-white mb-1 group-hover:text-red-500 transition-colors">
+                        <h3 className="text-lg font-bold text-white mb-1 group-hover:text-pink-500 transition-colors">
                           {link.name}
                         </h3>
                         {link.description && (
                           <p className="text-zinc-400 text-sm mb-2">{link.description}</p>
                         )}
                         {link.category && (
-                          <span className="inline-block px-2 py-1 bg-red-600/20 text-red-500 text-xs rounded-full">
+                          <span className="inline-block px-2 py-1 bg-pink-600/20 text-pink-500 text-xs rounded-full">
                             {link.category}
                           </span>
                         )}
                       </div>
-                      <ExternalLink className="w-5 h-5 text-zinc-500 group-hover:text-red-500 transition-colors shrink-0 ml-4" />
+                      <ExternalLink className="w-5 h-5 text-zinc-500 group-hover:text-pink-500 transition-colors shrink-0 ml-4" />
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-zinc-500 text-xs">Click to visit</span>
-                      <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-red-500 transition-colors" />
+                      <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-pink-500 transition-colors" />
                     </div>
                   </motion.div>
                 ))}

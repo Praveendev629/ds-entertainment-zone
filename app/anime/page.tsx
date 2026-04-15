@@ -23,29 +23,29 @@ export default function AnimePage() {
   return (
     <div className="h-screen bg-[#050505] text-white overflow-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-black/80 border-b border-red-600/20">
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-black/80 border-b border-pink-600/20">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <button
               onClick={() => router.push("/")}
-              className="p-2 hover:bg-red-600/10 rounded-xl border border-red-600/20 text-zinc-400 hover:text-red-500 transition-all"
+              className="p-2 hover:bg-pink-600/10 rounded-xl border border-pink-600/20 text-zinc-400 hover:text-pink-500 transition-all"
             >
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="flex items-center gap-2">
               <img
-                src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/edc22665-6f69-41bf-966e-691d920b92da/WhatsApp_Image_2026-01-27_at_10.41.17_PM-removebg-preview-1769562285410.png?width=8000&height=8000&resize=contain"
-                alt="Logo"
+                src="/ds-logo.png"
+                alt="DS Entertainment Zone Logo"
                 className="w-10 h-10 object-contain"
               />
               <span className="text-xl font-bold tracking-tight">
-                p.s <span className="text-red-600">movizs</span>
+                DS <span className="text-pink-600">Entertainment Zone</span>
               </span>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-widest text-red-500">
-              Animes Collection
+            <span className="text-xs font-black uppercase tracking-widest text-pink-500">
+              Anime Collection
             </span>
           </div>
         </div>
