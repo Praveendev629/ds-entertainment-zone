@@ -513,10 +513,20 @@ export default function HomePage() {
               className="text-3xl font-bold text-pink-400" 
             />
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-            <p className="text-sm text-pink-600 font-medium uppercase tracking-wider mt-4">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, y: 20 }} 
+            animate={{ opacity: 1, scale: 1, y: 0 }} 
+            transition={{ delay: 0.6, type: "spring", stiffness: 400, damping: 25 }}
+          >
+            <motion.p 
+              className="text-sm text-pink-600 font-medium uppercase tracking-wider mt-4"
+              animate={{
+                scale: [1, 1.05, 1],
+                transition: { duration: 2, repeat: Infinity, repeatDelay: 3 }
+              }}
+            >
               DS - Entertainment Zone
-            </p>
+            </motion.p>
           </motion.div>
         </motion.div>
       </div>
@@ -560,9 +570,14 @@ export default function HomePage() {
           </div>
           {/* Mobile DS - Entertainment Zone text */}
           <div className="sm:hidden flex-1 text-center">
-            <p className="text-pink-600 font-bold uppercase tracking-wider text-sm">
-              DS - Entertainment Zone
-            </p>
+            <motion.span 
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.3, type: "spring", stiffness: 300 }}
+              className="text-xl font-bold tracking-tight bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 bg-clip-text text-transparent"
+            >
+              DS <span className="font-black">ENTERTAINMENT</span> ZONE
+            </motion.span>
           </div>
         </div>
       </header>
