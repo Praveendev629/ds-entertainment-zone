@@ -7,8 +7,31 @@ import { useRouter } from "next/navigation";
 import {
   Search, X, ChevronRight, Loader2, Film, Globe,
   Download, Play, Pause, Volume2, VolumeX, Maximize2, Minimize2,
-  Tv, SkipForward, SkipBack,
+  Tv, SkipForward, SkipBack, Home, Settings, User, Heart,
 } from "lucide-react";
+
+// ── Typewriter Component ───────────────────────────────────────────────────────
+const TypewriterText = ({ text, className = "" }: { text: string; className?: string }) => {
+  const [displayText, setDisplayText] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, 100);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text]);
+
+  return (
+    <span className={`${className} font-serif italic`} style={{ fontFamily: 'cursive' }}>
+      {displayText}
+      <span className="animate-pulse">|</span>
+    </span>
+  );
+};
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Category { name: string; url: string }
@@ -320,6 +343,10 @@ export default function HomePage() {
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [subSearch, setSubSearch] = useState("");
   const [watching, setWatching] = useState<WatchState | null>(null);
+  
+  // Bottom navigation state
+  const [activeNav, setActiveNav] = useState("home");
+  const [showBubble, setShowBubble] = useState<string | null>(null);
 
   useEffect(() => {
     // Check URL parameters for site selection
@@ -477,16 +504,14 @@ export default function HomePage() {
           transition={{ duration: 0.8, ease: "easeOut" }} className="text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
             <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-48 h-48 mx-auto mb-4 object-contain" />
+              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain" />
           </motion.div>
-          <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-pink-500 to-pink-900">
-            DS Entertainment Zone
-          </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}
-            className="mt-2 text-zinc-500 font-medium uppercase tracking-[0.2em]">
-            Ultimate Experience
-          </motion.p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+            <TypewriterText 
+              text="dharshan srileka" 
+              className="text-3xl font-bold text-pink-400" 
+            />
+          </motion.div>
         </motion.div>
       </div>
     );
@@ -503,7 +528,7 @@ export default function HomePage() {
           <div onClick={() => { setSelectedCategory(null); setSearch(""); }}
             className="flex items-center gap-2 cursor-pointer shrink-0">
             <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-10 h-10 object-contain" />
+              alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain" />
             <span className="text-xl font-bold tracking-tight hidden sm:inline">
               DS <span className="text-pink-600">Entertainment Zone</span>
             </span>
@@ -902,6 +927,55 @@ export default function HomePage() {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-t border-pink-600/20">
+        <div className="max-w-7xl mx-auto px-4 py-2">
+          <div className="flex justify-around items-center">
+            {[
+              { id: "home", icon: Home, label: "Home", action: () => { setSelectedCategory(null); setSearch(""); setActiveNav("home"); } },
+              { id: "movies", icon: Film, label: "Movies", action: () => { setActiveNav("movies"); } },
+              { id: "anime", icon: Tv, label: "Anime", action: () => { router.push("/anime"); setActiveNav("anime"); } },
+              { id: "favorites", icon: Heart, label: "Favorites", action: () => { setActiveNav("favorites"); } },
+              { id: "profile", icon: User, label: "Profile", action: () => { setActiveNav("profile"); } },
+            ].map((item) => (
+              <div key={item.id} className="relative">
+                <button
+                  onClick={() => {
+                    item.action();
+                    setShowBubble(item.label);
+                    setTimeout(() => setShowBubble(null), 2000);
+                  }}
+                  className={`p-3 rounded-xl transition-all duration-200 relative ${
+                    activeNav === item.id 
+                      ? "bg-pink-600 text-white shadow-lg shadow-pink-600/30" 
+                      : "text-zinc-400 hover:text-pink-400 hover:bg-white/5"
+                  }`}
+                >
+                  <item.icon className="w-6 h-6" />
+                </button>
+                
+                {/* Bubble Tooltip */}
+                <AnimatePresence>
+                  {showBubble === item.label && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                      animate={{ opacity: 1, y: -40, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.8 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute left-1/2 -translate-x-1/2 bg-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-lg"
+                      style={{ top: "-50px" }}
+                    >
+                      {item.label}
+                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-pink-600 rotate-45 transform translate-y-1/2"></div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            ))}
+          </div>
+        </div>
+      </nav>
     </div>
   );
 }
