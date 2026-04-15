@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import {
   Search, X, ChevronRight, Loader2, Film, Globe,
   Download, Play, Pause, Volume2, VolumeX, Maximize2, Minimize2,
-  Tv, SkipForward, SkipBack, Home, Settings, User, Heart,
+  Tv, SkipForward, SkipBack, Home, Settings, User, Heart, Mic,
 } from "lucide-react";
 
 // ── Typewriter Component ───────────────────────────────────────────────────────
@@ -532,12 +532,23 @@ export default function HomePage() {
       <header className="sticky top-0 z-40 backdrop-blur-md bg-black/50 border-b border-pink-600/10">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div onClick={() => { setSelectedCategory(null); setSearch(""); }}
-            className="flex items-center gap-2 cursor-pointer shrink-0">
-            <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain" />
-            <span className="text-xl font-bold tracking-tight hidden sm:inline">
-              DS <span className="text-pink-600">Entertainment Zone</span>
-            </span>
+            className="flex items-center gap-2 cursor-pointer shrink-0 group">
+            <motion.div
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <img src="/ds-logo.png"
+                alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" />
+            </motion.div>
+            <motion.span 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
+              className="text-xl font-bold tracking-tight hidden sm:inline bg-gradient-to-r from-pink-500 via-pink-600 to-purple-600 bg-clip-text text-transparent"
+            >
+              DS <span className="font-black">ENTERTAINMENT</span> ZONE
+            </motion.span>
           </div>
           {/* Desktop search */}
           <div className="relative group flex-1 max-w-xl hidden sm:block">
@@ -895,52 +906,79 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-lg border-t border-pink-600/20">
-        <div className="max-w-7xl mx-auto px-4 py-2">
+      <motion.nav 
+        initial={{ y: 100 }}
+        animate={{ y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+        className="fixed bottom-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-t border-pink-600/30 shadow-2xl"
+      >
+        <div className="max-w-7xl mx-auto px-4 py-3">
           <div className="flex justify-around items-center">
             {[
               { id: "tamil-movies", icon: Film, label: "Tamil Movies", action: () => { switchSite("moviesda"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-movies"); } },
-              { id: "tamil-dubbed", icon: Globe, label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
+              { id: "tamil-dubbed", icon: Mic, label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
               { id: "anime-collection", icon: Tv, label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
               { id: "everything", icon: Globe, label: "Everything", action: () => { router.push("/everything"); setActiveNav("everything"); } },
             ].map((item) => (
-              <div key={item.id} className="relative">
-                <button
+              <motion.div key={item.id} className="relative">
+                <motion.button
+                  whileHover={{ 
+                    scale: 1.15, 
+                    y: -5,
+                    transition: { type: "spring", stiffness: 400, damping: 10 }
+                  }}
+                  whileTap={{ 
+                    scale: 0.9,
+                    transition: { type: "spring", stiffness: 600, damping: 15 }
+                  }}
                   onClick={() => {
                     item.action();
                     setShowBubble(item.label);
                     setTimeout(() => setShowBubble(null), 2000);
                   }}
-                  className={`p-3 rounded-xl transition-all duration-200 relative ${
+                  className={`p-4 rounded-2xl transition-all duration-300 relative backdrop-blur-sm ${
                     activeNav === item.id 
-                      ? "bg-pink-600 text-white shadow-lg shadow-pink-600/30" 
-                      : "text-zinc-400 hover:text-pink-400 hover:bg-white/5"
+                      ? "bg-gradient-to-br from-pink-500 to-pink-700 text-white shadow-2xl shadow-pink-500/50 border border-pink-400/50" 
+                      : "bg-white/10 text-zinc-300 hover:bg-white/20 hover:text-pink-400 border border-white/10 hover:border-pink-500/30"
                   }`}
                 >
-                  <item.icon className="w-6 h-6" />
-                </button>
+                  <motion.div
+                    animate={{ 
+                      rotate: activeNav === item.id ? 360 : 0,
+                      transition: { duration: 0.6, ease: "easeInOut" }
+                    }}
+                  >
+                    <item.icon className="w-6 h-6" />
+                  </motion.div>
+                </motion.button>
                 
                 {/* Bubble Tooltip */}
                 <AnimatePresence>
                   {showBubble === item.label && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.8 }}
-                      animate={{ opacity: 1, y: -40, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.8 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute left-1/2 -translate-x-1/2 bg-pink-600 text-white px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap shadow-lg"
-                      style={{ top: "-50px" }}
+                      initial={{ opacity: 0, y: 15, scale: 0.5 }}
+                      animate={{ opacity: 1, y: -50, scale: 1 }}
+                      exit={{ opacity: 0, y: 15, scale: 0.5 }}
+                      transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                      className="absolute left-1/2 -translate-x-1/2 bg-gradient-to-r from-pink-600 to-purple-600 text-white px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap shadow-2xl backdrop-blur-md"
+                      style={{ top: "-60px" }}
                     >
                       {item.label}
-                      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-pink-600 rotate-45 transform translate-y-1/2"></div>
+                      <motion.div 
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-3 h-3 bg-pink-600 rotate-45 transform translate-y-1/2"
+                        animate={{ 
+                          scale: [1, 1.2, 1],
+                          transition: { duration: 0.5, repeat: Infinity, repeatDelay: 1 }
+                        }}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
-      </nav>
+      </motion.nav>
     </div>
   );
 }
