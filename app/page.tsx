@@ -345,7 +345,7 @@ export default function HomePage() {
   const [watching, setWatching] = useState<WatchState | null>(null);
   
   // Bottom navigation state
-  const [activeNav, setActiveNav] = useState("home");
+  const [activeNav, setActiveNav] = useState("tamil-movies");
   const [showBubble, setShowBubble] = useState<string | null>(null);
 
   useEffect(() => {
@@ -543,54 +543,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* Site switcher */}
-      {!selectedCategory && (
-        <div className="max-w-7xl mx-auto px-4 pt-8">
-          {/* Mobile: Three rows - Tamil Movies & Dubbed on top, Anime & Everything Collection below */}
-          <div className="sm:hidden space-y-2">
-            <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10 gap-1">
-              <button onClick={() => switchSite("moviesda")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${site === "moviesda" ? "bg-pink-600 text-white shadow-lg shadow-pink-600/20" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}>
-                <Film className="w-4 h-4" /> Tamil Movies
-              </button>
-              <button onClick={() => switchSite("isaidub")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${site === "isaidub" ? "bg-pink-600 text-white shadow-lg shadow-pink-600/20" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}>
-                <Globe className="w-4 h-4" /> Tamil Dubbed
-              </button>
-            </div>
-            <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10 gap-1">
-              <button onClick={() => router.push("/anime")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-                <Tv className="w-4 h-4" /> Animes
-              </button>
-              <button onClick={() => router.push("/everything")}
-                className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-                <Globe className="w-4 h-4" /> Everything
-              </button>
-            </div>
-          </div>
-          {/* Desktop: All four in one row */}
-          <div className="hidden sm:flex p-1 bg-white/5 rounded-2xl border border-white/10 w-full max-w-3xl mx-auto sm:mx-0">
-            <button onClick={() => switchSite("moviesda")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${site === "moviesda" ? "bg-pink-600 text-white shadow-lg shadow-pink-600/20" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}>
-              <Film className="w-4 h-4" /> Tamil Movies
-            </button>
-            <button onClick={() => switchSite("isaidub")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all ${site === "isaidub" ? "bg-pink-600 text-white shadow-lg shadow-pink-600/20" : "text-zinc-500 hover:text-white hover:bg-white/5"}`}>
-              <Globe className="w-4 h-4" /> Tamil Dubbed
-            </button>
-            <button onClick={() => router.push("/anime")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-              <Tv className="w-4 h-4" /> Animes
-            </button>
-            <button onClick={() => router.push("/everything")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-              <Globe className="w-4 h-4" /> Everything
-            </button>
-          </div>
-        </div>
-      )}
-
+      
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
         {selectedCategory ? (
@@ -933,11 +886,10 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 py-2">
           <div className="flex justify-around items-center">
             {[
-              { id: "home", icon: Home, label: "Home", action: () => { setSelectedCategory(null); setSearch(""); setActiveNav("home"); } },
-              { id: "movies", icon: Film, label: "Movies", action: () => { setActiveNav("movies"); } },
-              { id: "anime", icon: Tv, label: "Anime", action: () => { router.push("/anime"); setActiveNav("anime"); } },
-              { id: "favorites", icon: Heart, label: "Favorites", action: () => { setActiveNav("favorites"); } },
-              { id: "profile", icon: User, label: "Profile", action: () => { setActiveNav("profile"); } },
+              { id: "tamil-movies", label: "Tamil Movies", action: () => { switchSite("moviesda"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-movies"); } },
+              { id: "tamil-dubbed", label: "Tamil Dubbed", action: () => { switchSite("isaidub"); setSelectedCategory(null); setSearch(""); setActiveNav("tamil-dubbed"); } },
+              { id: "anime-collection", label: "Anime Collection", action: () => { router.push("/anime"); setActiveNav("anime-collection"); } },
+              { id: "everything", label: "Everything", action: () => { router.push("/everything"); setActiveNav("everything"); } },
             ].map((item) => (
               <div key={item.id} className="relative">
                 <button
@@ -946,13 +898,13 @@ export default function HomePage() {
                     setShowBubble(item.label);
                     setTimeout(() => setShowBubble(null), 2000);
                   }}
-                  className={`p-3 rounded-xl transition-all duration-200 relative ${
+                  className={`px-4 py-2 rounded-xl text-sm font-bold transition-all duration-200 relative ${
                     activeNav === item.id 
                       ? "bg-pink-600 text-white shadow-lg shadow-pink-600/30" 
                       : "text-zinc-400 hover:text-pink-400 hover:bg-white/5"
                   }`}
                 >
-                  <item.icon className="w-6 h-6" />
+                  {item.label}
                 </button>
                 
                 {/* Bubble Tooltip */}
