@@ -603,7 +603,7 @@ export default function EverythingPage() {
               <Tv className="w-4 h-4" /> Animes
             </button>
             <button onClick={() => router.push("/everything")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-red-600 text-white shadow-lg shadow-red-600/20`}>
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-pink-600 text-white shadow-lg shadow-pink-600/20`}>
               <Globe className="w-4 h-4" /> Everything
             </button>
           </div>
@@ -623,7 +623,7 @@ export default function EverythingPage() {
             <Tv className="w-4 h-4" /> Animes
           </button>
           <button onClick={() => router.push("/everything")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-red-600 text-white shadow-lg shadow-red-600/20`}>
+            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-pink-600 text-white shadow-lg shadow-pink-600/20`}>
             <Globe className="w-4 h-4" /> Everything
           </button>
         </div>
@@ -633,7 +633,7 @@ export default function EverythingPage() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Page Title */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-red-600 via-red-500 to-red-900 mb-2">
+          <h1 className="text-4xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-pink-500 to-pink-900 mb-2">
             Everything Collection
           </h1>
           <p className="text-zinc-500 font-medium uppercase tracking-[0.2em]">
@@ -689,7 +689,7 @@ export default function EverythingPage() {
                   // --- FIX 6: Use correct variable for active check ---
                   className={`px-6 py-3 rounded-xl text-sm font-bold transition-all ${
                     activeSectionTabs[activeSection] === tab.id
-                      ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
+                      ? "bg-pink-600 text-white shadow-lg shadow-pink-600/20"
                       : "text-zinc-500 hover:text-white hover:bg-white/5"
                   }`}
                 >
