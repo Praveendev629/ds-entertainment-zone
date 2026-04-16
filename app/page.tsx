@@ -10,27 +10,6 @@ import {
   Tv, SkipForward, SkipBack, Home, Settings, User, Heart, Mic,
 } from "lucide-react";
 
-// ── Typewriter Component ───────────────────────────────────────────────────────
-const TypewriterText = ({ text, className = "" }: { text: string; className?: string }) => {
-  const [displayText, setDisplayText] = useState("");
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, 100);
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, text]);
-
-  return (
-    <span className={`${className} font-serif italic`} style={{ fontFamily: 'cursive' }}>
-      {displayText}
-    </span>
-  );
-};
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface Category { name: string; url: string }
