@@ -583,51 +583,7 @@ export default function EverythingPage() {
                   </div>
       </header>
 
-      {/* Site switcher */}
-      <div className="max-w-7xl mx-auto px-4 pt-8">
-        {/* Mobile: Three rows - Tamil Movies & Dubbed on top, Anime & Everything Collection below */}
-        <div className="sm:hidden space-y-2">
-          <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10 gap-1">
-            <button onClick={() => router.push("/?site=moviesda")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-              <Film className="w-4 h-4" /> Tamil Movies
-            </button>
-            <button onClick={() => router.push("/?site=isaidub")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-              <Globe className="w-4 h-4" /> Tamil Dubbed
-            </button>
-          </div>
-          <div className="flex p-1 bg-white/5 rounded-2xl border border-white/10 gap-1">
-            <button onClick={() => router.push("/anime")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-              <Tv className="w-4 h-4" /> Animes
-            </button>
-            <button onClick={() => router.push("/everything")}
-              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-pink-600 text-white shadow-lg shadow-pink-600/20`}>
-              <Globe className="w-4 h-4" /> Everything
-            </button>
-          </div>
-        </div>
-        {/* Desktop: All four in one row */}
-        <div className="hidden sm:flex p-1 bg-white/5 rounded-2xl border border-white/10 w-full max-w-3xl mx-auto sm:mx-0">
-          <button onClick={() => router.push("/?site=moviesda")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-            <Film className="w-4 h-4" /> Tamil Movies
-          </button>
-          <button onClick={() => router.push("/?site=isaidub")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-            <Globe className="w-4 h-4" /> Tamil Dubbed
-          </button>
-          <button onClick={() => router.push("/anime")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all text-zinc-500 hover:text-white hover:bg-white/5`}>
-            <Tv className="w-4 h-4" /> Animes
-          </button>
-          <button onClick={() => router.push("/everything")}
-            className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all bg-pink-600 text-white shadow-lg shadow-pink-600/20`}>
-            <Globe className="w-4 h-4" /> Everything
-          </button>
-        </div>
-      </div>
+      
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-8">
