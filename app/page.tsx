@@ -476,32 +476,95 @@ export default function HomePage() {
 
   // ── Splash ──────────────────────────────────────────────────────────────
   if (splash) {
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }} className="text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }} className="relative">
-            {/* Logo background effect */}
-            <div className="absolute inset-0 w-64 h-64 mx-auto rounded-full bg-pink-600/20 blur-3xl scale-150"></div>
-            <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" />
-          </motion.div>
-         
-          
-            <motion.p 
-              className="text-sm text-pink-600 font-medium uppercase tracking-wider mt-4"
-              animate={{
-                scale: [1, 1.05, 1],
-                transition: { duration: 2, repeat: Infinity, repeatDelay: 3 }
-              }}
-            >
-              DS - Entertainment Zone
-            </motion.p>
-        </motion.div>
-      </div>
-    );
-  }
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black overflow-hidden">
+      
+      {/* Optional: Subtle Tech Grid Background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(236,72,153,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(236,72,153,0.03)_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_70%,transparent_100%)]"></div>
 
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.8 }} 
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.8, ease: "easeOut" }} 
+        className="text-center relative z-10 w-full max-w-md px-6"
+      >
+        {/* Logo Container with Float Animation */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="relative mb-8"
+        >
+          {/* Animated Glow Behind Logo */}
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              opacity: [0.3, 0.6, 0.3]
+            }}
+            transition={{ 
+              duration: 3, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            className="absolute inset-0 w-64 h-64 mx-auto rounded-full bg-pink-600 blur-[80px]"
+          />
+          
+          {/* Logo Image */}
+          <motion.img
+            animate={{ y: [0, -10, 0] }}
+            transition={{
+              duration: 4,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }}
+            src="/ds-logo.png"
+            alt="DS Entertainment Zone Logo" 
+            className="w-64 h-64 mx-auto object-contain relative z-10 drop-shadow-[0_0_15px_rgba(236,72,153,0.5)]" 
+          />
+        </motion.div>
+         
+        {/* Loading Bar Container */}
+        <div className="w-full max-w-[200px] mx-auto mb-8">
+          <motion.div 
+            initial={{ width: "0%" }}
+            animate={{ width: "100%" }}
+            transition={{ duration: 2.5, ease: "circOut" }}
+            className="h-1.5 w-full bg-gray-800 rounded-full overflow-hidden shadow-[0_0_10px_rgba(255,255,255,0.1)]"
+          >
+            <div className="h-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 w-full shadow-[0_0_15px_rgba(236,72,153,0.8)]"></div>
+          </motion.div>
+        </div>
+
+        {/* Designed Typography Section */}
+        <div className="flex flex-col items-center justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="relative"
+          >
+             {/* Main Logo Text */}
+             <h1 className="font-black text-4xl md:text-5xl tracking-tighter text-transparent bg-clip-text bg-gradient-to-br from-white via-pink-100 to-pink-500 drop-shadow-lg">
+              DS
+            </h1>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, letterSpacing: "0.5em" }}
+            animate={{ opacity: 1, letterSpacing: "0.2em" }}
+            transition={{ duration: 1, delay: 0.8 }}
+            className="mt-2"
+          >
+            <p className="text-[10px] md:text-xs text-pink-400/90 font-medium uppercase tracking-[0.3em] border-t border-pink-500/30 pt-3">
+              Entertainment Zone
+            </p>
+          </motion.div>
+        </div>
+
+      </motion.div>
+    </div>
+  );
+}
   // ── Main App ─────────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-[#050505] text-white selection:bg-pink-500/30">
@@ -518,7 +581,7 @@ export default function HomePage() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <img src="/ds-logo.png"
-                alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" /> <p>ds entertainment zone</p>
+                alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" />
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, x: -20 }}

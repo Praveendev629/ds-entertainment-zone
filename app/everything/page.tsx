@@ -575,7 +575,7 @@ export default function EverythingPage() {
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div onClick={() => router.push("/")} className="flex items-center gap-2 cursor-pointer shrink-0">
             <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" />
+              alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" /> <p>d.s entertain ment zone</p>
             <span className="text-xl font-bold tracking-tight hidden sm:inline">
               DS <span className="text-pink-600">Entertainment Zone</span>
             </span>
