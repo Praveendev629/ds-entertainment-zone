@@ -484,7 +484,7 @@ export default function HomePage() {
             {/* Logo background effect */}
             <div className="absolute inset-0 w-64 h-64 mx-auto rounded-full bg-pink-600/20 blur-3xl scale-150"></div>
             <img src="/ds-logo.png"
-              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" /><p> ds entertainment zone</p>
+              alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" />
           </motion.div>
          
           
@@ -518,7 +518,7 @@ export default function HomePage() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <img src="/ds-logo.png"
-                alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" />
+                alt="DS Entertainment Zone Logo" className="w-16 h-16 object-contain drop-shadow-lg" /> <p>ds entertainment zone</p>
             </motion.div>
             <motion.span 
               initial={{ opacity: 0, x: -20 }}
