@@ -508,11 +508,7 @@ export default function HomePage() {
               alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" />
           </motion.div>
          
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8, y: 20 }} 
-            animate={{ opacity: 1, scale: 1, y: 0 }} 
-            transition={{ delay: 0.6, type: "spring", stiffness: 400, damping: 25 }}
-          >
+          
             <motion.p 
               className="text-sm text-pink-600 font-medium uppercase tracking-wider mt-4"
               animate={{
@@ -522,7 +518,6 @@ export default function HomePage() {
             >
               DS - Entertainment Zone
             </motion.p>
-          </motion.div>
         </motion.div>
       </div>
     );
