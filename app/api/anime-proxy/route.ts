@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
           left: 20px;
           width: 120px;
           height: 40px;
-          background: url('https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/render/image/public/project-uploads/edc22665-6f69-41bf-966e-691d920b92da/WhatsApp_Image_2026-01-27_at_10.41.17_PM-removebg-preview-1769562285410.png?width=8000&height=8000&resize=contain') no-repeat center;
+          background: url('public/logo.png') no-repeat center;
           background-size: contain;
           z-index: 9999;
           pointer-events: none;
@@ -60,12 +60,12 @@ export async function GET(req: NextRequest) {
           right: 20px;
           font-size: 14px;
           font-weight: 900;
-          color: rgba(220, 38, 38, 0.6);
+          color: rgba(254, 1, 250, 0.6);
           text-transform: uppercase;
           letter-spacing: 2px;
           z-index: 9999;
           pointer-events: none;
-          text-shadow: 0 0 10px rgba(220, 38, 38, 0.4);
+          text-shadow: 0 0 10px rgba(39, 12, 241, 0.4);
         }
 
         /* Hide ad popups and overlays */

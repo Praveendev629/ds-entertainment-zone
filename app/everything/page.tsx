@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
@@ -38,7 +39,7 @@ interface Tab {
   links: ExternalLink[];
 }
 
-// External links data
+// External links data (Keeping data exactly as provided, focusing on code fixes)
 const sectionsData: Section[] = [
   {
     id: "anime",
@@ -508,8 +509,13 @@ export default function EverythingPage() {
   const [loading, setLoading] = useState(true);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [activeSection, setActiveSection] = useState("anime");
-  const [filteredLinks, setFilteredLinks] = useState<ExternalLink[]>([]);
+  
+  // --- FIX 1: Separate states for Bottom Navigation vs. Section Tabs ---
+  // activeNav tracks the bottom navigation selection (String)
   const [activeNav, setActiveNav] = useState("everything");
+  // activeSectionTabs tracks the active tab within each section (Object)
+  const [activeSectionTabs, setActiveSectionTabs] = useState<{ [key: string]: string }>({});
+  
   const [showBubble, setShowBubble] = useState<string | null>(null);
 
   // Initialize first tab for all sections on mount
@@ -520,13 +526,16 @@ export default function EverythingPage() {
         initialTabs[section.id] = section.tabs[0].id;
       }
     });
-    setActiveNav(initialTabs);
+    setActiveSectionTabs(initialTabs);
   }, []);
 
   const currentSection = sectionsData.find((s: Section) => s.id === activeSection);
-  const currentTab = currentSection?.tabs.find((t: Tab) => t.id === activeNav[activeSection]);
+  
+  // --- FIX 2: Use the correct object variable for tab lookup ---
+  const currentTab = currentSection?.tabs.find((t: Tab) => t.id === activeSectionTabs[activeSection]);
 
-  // Filter links based on search
+  // Filter links based on search (and current tab)
+  // --- FIX 3: Removed duplicate state declaration of filteredLinks ---
   const filteredLinks = useMemo(() => {
     return currentTab?.links || [];
   }, [currentTab]);
@@ -536,7 +545,8 @@ export default function EverythingPage() {
   };
 
   const handleTabChange = (section: Section, tabId: string) => {
-    setActiveNav((prev: string) => {
+    // --- FIX 4: Update the correct state and use correct types ---
+    setActiveSectionTabs((prev: { [key: string]: string }) => {
       const newActive = { ...prev };
       newActive[section.id] = tabId;
       return newActive;
@@ -549,7 +559,8 @@ export default function EverythingPage() {
       setActiveSection(sectionId);
       const firstTab = section.tabs[0]?.id;
       if (firstTab) {
-        setActiveNav((prev: { [key: string]: string }) => ({ ...prev, [sectionId]: firstTab }));
+        // --- FIX 5: Update the correct state ---
+        setActiveSectionTabs((prev: { [key: string]: string }) => ({ ...prev, [sectionId]: firstTab }));
       }
     }
   };
@@ -674,9 +685,10 @@ export default function EverythingPage() {
               {currentSection.tabs.map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => handleTabChange(activeSection, tab.id)}
+                  onClick={() => handleTabChange(currentSection, tab.id)}
+                  // --- FIX 6: Use correct variable for active check ---
                   className={`px-6 py-3 rounded-xl text-sm font-bold transition-all ${
-                    activeTab[activeSection] === tab.id
+                    activeSectionTabs[activeSection] === tab.id
                       ? "bg-red-600 text-white shadow-lg shadow-red-600/20"
                       : "text-zinc-500 hover:text-white hover:bg-white/5"
                   }`}
