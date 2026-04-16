@@ -507,12 +507,7 @@ export default function HomePage() {
             <img src="/ds-logo.png"
               alt="DS Entertainment Zone Logo" className="w-64 h-64 mx-auto mb-6 object-contain relative z-10" />
           </motion.div>
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
-            <TypewriterText 
-              text="dharshan srileka" 
-              className="text-3xl font-bold text-pink-400" 
-            />
-          </motion.div>
+         
           <motion.div 
             initial={{ opacity: 0, scale: 0.8, y: 20 }} 
             animate={{ opacity: 1, scale: 1, y: 0 }} 
