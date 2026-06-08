@@ -143,7 +143,7 @@ const sectionsData: Section[] = [
         links: [
            { name: "prime shows", url: "https://primeshows.uk/", description: "copy of AMAZON prime but fully free", category: "Official" },
          
-         { name: "Moviesda", url: "https://moviesda18.com/", description: "watch and download all tamil movies", category: "Official" },
+         { name: "Moviesda", url: "https://moviesda31.com/", description: "watch and download all tamil movies", category: "Official" },
            { name: "isaidub", url: "https://isaidub.love/", description: "watch and download all english dubbed movies and series", category: "Official" },
            { name: "kutty movies", url: "https://kuttymovies1.free/", description: "Download all tamil and english dubbed movies and series at one plce", category: "Official" },
            { name: "tamil blasters", url: "https://tamilblasters.garden/", description: "watch and download all tamil and tamil dubbed movies", category: "Official" },
