@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 const SITES: Record<string, string> = {
   moviesda: "https://moviesda31.com",
-  isaidub: "https://isaidub.love",
-  animesalt: "https://animesalt.link",
+  isaidub: "https://isaidubweb.me",
+  animesalt: "https://animesalt.cx",
 };
 
 const HEADERS = {
